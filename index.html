@@ -5,8 +5,10 @@
 <title>Demo</title>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/handsontable@latest/dist/handsontable.full.min.css">
 <script src="https://cdn.jsdelivr.net/npm/handsontable@latest/dist/handsontable.full.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <style>
 .handsontable table thead th {color: black !important; background: violet !important; }
+.invalid{background:red}
 </style>
 </head>
 <body>
@@ -57,6 +59,16 @@ var dataObject = [
   }
 ];
 
+var emailValidator = function (value, callback) {
+	  
+	    if (/.+@.+/.test(value)) {
+	      callback(true);
+	    }
+	    else {
+	      callback(false);
+	    }
+	 
+	};
 var hotElement = document.querySelector('#hot');
 var hotElementContainer = hotElement.parentNode;
 var hotSettings = {
@@ -74,7 +86,9 @@ var hotSettings = {
 		    },
 		    {
 		      data: 'Email',
-		      type: 'text'
+		      type: 'text',
+		      validator: emailValidator, 
+		      allowInvalid: false
 		    },
 		    {
 		      data: 'Address',
@@ -113,6 +127,13 @@ var hotSettings = {
 		  },
 		  autoColumnSize: {
 		    samplingRatio: 23
+		  },
+		  afterValidate: function(isValid, value, row, prop, source){
+			  if(isValid == false){
+				  var col = this.propToCol(prop);
+				  var curCell = hot.getCell(row,col);
+				  curCell.style.background = "red";
+			  }
 		  },
 		  mergeCells: true,
 		  manualRowResize: true,
