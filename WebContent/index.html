@@ -9,6 +9,10 @@
 <style>
 .handsontable table thead th {color: black !important; background: violet !important; }
 .invalid{background:red}
+.highlightCell {
+  background-color: yellow !important;
+  color: black !important;
+}
 </style>
 </head>
 <body>
@@ -23,6 +27,7 @@ var dataObject = [
     Address: '25, car south street, 600018',
     Phone: '8675151526',
     Fax: '',
+    Status:'Done'
     
   },
   {
@@ -32,6 +37,7 @@ var dataObject = [
 	  Address: '25, car south street, 600018',
 	  Phone: '8675151526',
 	  Fax: '03423423423',
+	  Status:'None'
   },
   {
 	  Id: '#HJTC0007',
@@ -40,6 +46,7 @@ var dataObject = [
 	  Address: '25, car south street, 600018',
 	  Phone: '8675151526',
 	  Fax: '344234234',
+	  Status:'Done'
   },
   {
 	  Id: '#HJTC0008',
@@ -48,6 +55,7 @@ var dataObject = [
 	  Address: '25, car south street, 600018',
 	  Phone: '8675151526',
 	  Fax: '',
+	  Status:'None'
   },
   {
 	  Id: '#HJTC0009',
@@ -56,9 +64,19 @@ var dataObject = [
 	  Address: '25, car south street, 600018',
 	  Phone: '8675151526',
 	  Fax: '',
+	  Status:'None'
   }
 ];
 
+var flagRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+
+	if(value == "Done"){
+		$(td).parent().addClass("highlightCell");
+		
+	}	
+		
+
+}
 var emailValidator = function (value, callback) {
 	  
 	    if (/.+@.+/.test(value)) {
@@ -96,13 +114,18 @@ var hotSettings = {
 		    },
 		    {
 		      data: 'Phone',
-		      type: 'numeric',
+		      type: 'text',
 		      
 		    },
 		    {
 		      data: 'Fax',
-		      type: 'numeric'
-		    }
+		      type: 'text'
+		    },
+		    {
+		      data:'Status',
+		      type:'text',
+		     // renderer:flagRenderer
+		     }
 		    
 		  ],
 		  stretchH: 'all',
@@ -118,7 +141,8 @@ var hotSettings = {
 		    'Email',
 		    'Address',
 		    'Phone',
-		    'Fax'
+		    'Fax',
+		    'Status'
 		  ],
 		  contextMenu: true,
 		  dropdownMenu: true,
@@ -135,6 +159,7 @@ var hotSettings = {
 				  curCell.style.background = "red";
 			  }
 		  },
+		  
 		  mergeCells: true,
 		  manualRowResize: true,
 		  manualColumnResize: true,
@@ -143,7 +168,27 @@ var hotSettings = {
 		  filters: true,
 		  exportFile: true
 		};
+		
+
 var hot = new Handsontable(hotElement, hotSettings);
+hot.updateSettings({
+    cells: function(row, col) {
+      var cellProp = {};
+      if(hot.getDataAtCell(row, col) != null){
+	      if (hot.getDataAtCell(row, col).match(/Done/)) {
+	    	for(var i=0;i<col;i++){
+	    		var curCell = hot.getCell(row,i);
+				curCell.style.background = "yellow";
+				
+	    	}
+	    	cellProp.className = cellProp.className + ' highlightCell'
+	      }
+	      else
+	    	cellProp.className = "";
+      }   
+      return cellProp;
+    }
+  }); 
 </script>
 </body>
 </html>
