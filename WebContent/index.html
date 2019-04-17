@@ -174,7 +174,7 @@ var hot = new Handsontable(hotElement, hotSettings);
 hot.updateSettings({
     cells: function(row, col) {
       var cellProp = {};
-      if(hot.getDataAtCell(row, col) != null){
+      if(hot.getDataAtCell(row, col) != null && row!=0){
 	      if (hot.getDataAtCell(row, col).match(/Done/)) {
 	    	for(var i=0;i<col;i++){
 	    		var curCell = hot.getCell(row,i);
